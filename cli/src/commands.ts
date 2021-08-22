@@ -7,7 +7,7 @@ export function list() {
   const fields = [{
     label: 'Label',
     len: 30,
-    transform: (bb: BakeBoy) => bb.label.length >= 30 ? bb.label : `${bb.label.substr(0, 26)}...`,
+    transform: (bb: BakeBoy) => bb.label.length < 30 ? bb.label : `${bb.label.substr(0, 26)}...`,
   }, {
     label: 'Date created',
     len: 15,
@@ -23,10 +23,10 @@ export function list() {
     titles += `${field.label.padEnd(field.len, ' ')}`;
     totalLen += field.len;
   }
-  console.log(titles);
-  console.log('='.repeat(totalLen));
+  console.info(titles);
+  console.info('='.repeat(totalLen));
   if (!bakeBoys.length) {
-    console.log(`You haven't baked any boyos yet, get you some 'bakeboy bake'`);
+    console.info(`You haven't baked any boyos yet, get you some 'bakeboy bake'`);
   }
   for (const bb of bakeBoys) {
     let row = '';
@@ -34,7 +34,7 @@ export function list() {
       let value = field.transform(bb);
       row += `${value.padEnd(field.len, ' ')}`;
     }
-    console.log(row);
+    console.info(row);
   }
 }
 
@@ -55,7 +55,7 @@ export async function bake({ label, timeout, canSend, canReceive}: BakeArgs) {
 
   let macaroon = '';
   try {
-    const macaroon = await execLnd(`bakemacaroon ${perms}`);
+    macaroon = await execLnd(`bakemacaroon ${perms}`);
   } catch(err) {
     console.error(err);
     console.error('Communication with LND failed, full error above');
@@ -81,8 +81,8 @@ export async function bake({ label, timeout, canSend, canReceive}: BakeArgs) {
     process.exit(1);
   }
   const uri = await createBakeBoyUri(macaroon);
-  console.log(`oh shit whatup it's dat boi`);
-  console.log(uri);
+  console.info(`oh shit whatup it's dat boi`);
+  console.info(uri);
 }
 
 export function revoke() {
